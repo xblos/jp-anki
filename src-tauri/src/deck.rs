@@ -185,17 +185,14 @@ impl Package {
         let mut media_list: Vec<String> = Vec::new();
 
         for (index, note) in self.deck.notes.iter_mut().enumerate() {
-            let reading = if_chain! {
-                if !note.use_reading;
-                if let Some(note_reading) = &note.reading;
-                then { format!("{}[{}]", note.word, note_reading) }
-                else {
-                    if let Some(note_reading) = &note.reading {
-                        note_reading.to_string()
-                    } else {
-                        String::new()
-                    }
+            let reading = if let Some(reading) = &note.reading {
+                if note.use_reading {
+                    reading.to_string()
+                } else {
+                    format!("{}[{}]", note.word, reading)
                 }
+            } else {
+                String::new()
             };
 
             let id = note.id.with_context(|| format!("Note {} has no ID", note.word))?;
@@ -225,7 +222,7 @@ impl Package {
                 vec![
                     &(index + 1).to_string(),
                     if note.use_reading { &reading } else { &note.word },
-                    &reading,
+                    if note.use_reading { "" } else { &reading },
                     &note.definition,
                     &pronunciation,
                     &media,
