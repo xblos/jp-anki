@@ -193,7 +193,7 @@ impl Package {
                     if let Some(note_reading) = &note.reading {
                         note_reading.to_string()
                     } else {
-                        note.word.clone()
+                        String::new()
                     }
                 }
             };
