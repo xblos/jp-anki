@@ -17,12 +17,6 @@
     src: url("_jpaf.ttf");
 }
 
-body {
-    color: var(--color) !important;
-    background-color: var(--background-color) !important;
-    padding: 2em 10%;
-}
-
 .front {
     padding-top: 10px;
     margin-bottom: -10px;
@@ -39,7 +33,6 @@ body {
     width: 100%
 }
 
-.card-title,
 .instruction {
     font-size: 20px;
     font-weight: 700;
@@ -54,8 +47,7 @@ body {
     visibility: hidden;
 }
 
-.word,
-.reading {
+.word, .reading {
     white-space: nowrap;
     font-size: 32px;
 }
@@ -75,19 +67,25 @@ body {
 
 /* ------------------------------ */
 
+body {
+    color: var(--color) !important;
+    background-color: var(--background-color) !important;
+    padding: 2em 10% !important;
+}
+
 hr {
     color: var(--color) !important;
-    filter: brightness(30%);
-    border: 0;
-    border-bottom: 1px solid;
-    margin: 3em 0;
+    filter: brightness(30%) !important;
+    border: 0 !important;
+    border-bottom: 1px solid !important;
+    margin: 3em 0 !important;
 }
 
 button {
     color: var(--color) !important;
     min-width: 7em !important;
     height: 2.5em !important;
-    white-space: nowrap;
+    white-space: nowrap !important;
     font-size: 20px !important;
     font-weight: 200 !important;
     background: transparent !important;
@@ -98,10 +96,33 @@ button {
 }
 
 button:hover {
-    filter: brightness(120%);
+    filter: brightness(120%) !important;
 }
 
 button:active {
     background-color: var(--button-color) !important;
-    filter: brightness(120%);
+    filter: brightness(120%) !important;
+}
+
+.replay-button svg {
+	width: 60px !important;
+	height: 60px !important;
+}
+
+.replay-button svg circle {
+	fill: var(--button-color) !important;
+}
+
+.replay-button svg path {
+	transform: scale(.5) translate(50%, 50%) !important;
+	fill: var(--color) !important;
+	filter: brightness(90%) !important;
+}
+
+.replay-button:hover {
+	filter: brightness(120%) !important;
+}
+
+.replay-button:active {
+	filter: brightness(80%) !important;
 }
