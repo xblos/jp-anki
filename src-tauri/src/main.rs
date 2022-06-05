@@ -3,7 +3,7 @@
     windows_subsystem = "windows"
 )]
 
-use std::path::Path;
+use std::{path::Path, ffi::OsString};
 
 use anyhow::Context;
 use app::{
@@ -16,6 +16,21 @@ macro_rules! catch {
     ($a:expr) => {
         $a.map_err(|e| format!("{:#}", e))?
     };
+}
+
+#[tauri::command]
+async fn read_settings(app_handle: tauri::AppHandle) -> Result<String, String> {
+    let path = settings_path(app_handle)?;
+    catch!(create_parent_dir(Path::new(path.as_os_str())).await);
+    let json = fs::read_to_string(path).await;
+    Ok(json.unwrap_or("{}".to_string()))
+}
+
+#[tauri::command]
+async fn write_settings(json: String, app_handle: tauri::AppHandle) -> Result<(), String> {
+    let path = settings_path(app_handle)?;
+    catch!(fs::write(path, json).await);
+    Ok(())
 }
 
 #[tauri::command]
@@ -190,9 +205,22 @@ fn css_path(dir: &str) -> String {
     format!("{}/style.css", dir)
 }
 
+fn settings_path(app_handle: tauri::AppHandle) -> Result<OsString, String> {
+    let app_name = app_handle.package_info().name.to_string();
+    let settings_file =  format!("{}/settings.json", app_name);
+    let path = tauri::api::path::config_dir().map(|dir| dir.join(settings_file).into_os_string());
+    if let Some(path) = path {
+        Ok(path)
+    } else {
+        Err("Cannot retrieve settings file".to_string())
+    }
+}
+
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
+            read_settings,
+            write_settings,
             open_deck,
             restore_backup,
             write_deck,

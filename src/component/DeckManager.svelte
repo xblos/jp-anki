@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { invoke } from '@tauri-apps/api'
     import FileUploader from './FileUploader.svelte'
-    import { deck, deckPathField, deckPath, jsonDeck, deckValue } from '../stores'
+    import { deck, deckPathField, deckPath, jsonDeck, deckValue, settingsField, settingsValue, deckField } from '../stores'
     import {
         hideLoadingModal,
         showConfirmModal,
@@ -12,7 +12,7 @@
     } from '../modals'
     import { showSuccessToast } from '../toasts'
     import { save } from '@tauri-apps/api/dialog'
-import { Deck } from '../model/deck';
+import { Deck } from '../models';
 
     async function onDeckSelected() {
         if (!deckPath()) {
@@ -36,19 +36,25 @@ import { Deck } from '../model/deck';
 
     async function onStartNewDeck() {
         try {
-            const ok = await showNewDeckModal()
-            if (ok) {
-                $deck = new Deck(deckValue('name'), deckValue('id'))
-                await invoke('write_deck', { dir: deckPath(), json: jsonDeck() })
+            if (await showNewDeckModal()) {
+                const newDeck = new Deck(deckValue('name'), deckValue('id'))
+                await invoke('write_deck', { dir: deckPath(), json: JSON.stringify(newDeck) })
+                $deck = newDeck
                 showSuccessToast('New deck created')
             }
         } catch (err) {
+            $deck = null
             showErrorModal(null, err)
         }
     }
 
-    async function onOpenCurDir() {
-        $deckPathField.value = "./"
+    async function onOpenDefaultDir() {
+        let path: string = settingsValue('defaultDir')
+        if (!path) {
+            showErrorModal('No default directory chosen')
+            return
+        }
+        $deckPathField.value = path
         onDeckSelected()
     }
 
@@ -112,7 +118,7 @@ import { Deck } from '../model/deck';
     <h2 class="title">Choose Deck</h2>
     <FileUploader id="deck" file={deckPathField} options={{ directory: true }} on:change={onDeckSelected}/>
     {#if $deck}
-        <h2 class="success-text">Deck loaded successfully</h2>
+        <h2 class="success-text">{deckValue('name')}</h2>
         <div class="deck-info">
             <h3>Note Count:&nbsp;&nbsp;{$deck.notes.length}</h3>
             {#if $deck.notes.length > 0}
@@ -123,7 +129,7 @@ import { Deck } from '../model/deck';
         <button class="form-button" on:click={onWriteApkg}>Write .apkg</button>
         <button class="form-button" on:click={onRestoreBackup}>Restore Backup</button>
     {:else}
-        <button class="form-button" on:click={onOpenCurDir}>Open current directory</button>
+        <button class="form-button" on:click={onOpenDefaultDir}>Open default directory</button>
     {/if}
 </section>
 
@@ -136,6 +142,9 @@ import { Deck } from '../model/deck';
     .success-text {
         margin-top: .3em;
         margin-bottom: .2em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .deck-info > *:not(:last-child) {

@@ -4,7 +4,7 @@
     import FormInput from './FormInput.svelte'
     import FormTextArea from './FormTextArea.svelte'
     import { noteForm, noteField, addNote, noteValue, deck, deckPath, jsonDeck, words, nextNoteId, curNoteId } from '../stores'
-    import { Note } from '../model/note'
+    import { Note } from '../models'
     import { showSuccessToast } from '../toasts';
     import { showConfirmModal, showConfirmModalPromise, showErrorModal } from '../modals'
     import { invoke } from '@tauri-apps/api/tauri'

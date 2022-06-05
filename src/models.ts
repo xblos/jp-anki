@@ -9,3 +9,17 @@ export class Note {
         public id?: number
     ) { }
 }
+
+export class Deck {
+    constructor(
+        public name?: string,
+        public id?: string,
+        public notes: Note[] = []
+    ) { }
+}
+
+export class Settings {
+    constructor(
+        public defaultDir?: string,
+    ) { }
+}

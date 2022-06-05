@@ -7,7 +7,7 @@
     "distDir": "../public"
   },
   "package": {
-    "productName": "jp_anki",
+    "productName": "JP Anki",
     "version": "1.0.0"
   },
   "tauri": {
