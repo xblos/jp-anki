@@ -2,9 +2,9 @@
     import { deckField, deckForm, deckValue, generateDeckId, parseDeckId } from '../../stores'
     import FormInput from '../FormInput.svelte'
     import { getContext } from 'svelte'
-    import { showErrorModal } from '../../modals';
-    import Icon from 'svelte-awesome';
-import { refresh } from 'svelte-awesome/icons';
+    import { showErrorModal } from '../../modals'
+    import Icon from 'svelte-awesome'
+    import { refresh } from 'svelte-awesome/icons'
 
     export let handler: (ok: boolean) => void
 
@@ -51,12 +51,12 @@ import { refresh } from 'svelte-awesome/icons';
 
 <section class="modal form">
     <h2>New Deck</h2>
-    <FormInput id="name" value={deckField('name')}/>
+    <FormInput id="name" value={deckField('name')} />
     <label for="id">ID</label>
     <div id="id" class="combined-input">
-        <FormInput value={deckField('id')}/>
+        <FormInput value={deckField('id')} />
         <button id="gen" class="form-button" on:click={onGenerateId}>
-            <Icon data={refresh}/>
+            <Icon data={refresh} />
             Generate
         </button>
     </div>

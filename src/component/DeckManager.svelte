@@ -1,20 +1,22 @@
 <script lang="ts">
-	import { invoke } from '@tauri-apps/api'
+    import { invoke } from '@tauri-apps/api'
     import FileUploader from './FileUploader.svelte'
-    import { deck, deckPathField, deckPath, jsonDeck, deckValue, settingsField, settingsValue, deckField } from '../stores'
+    import { deck, deckPathField, deckPath, jsonDeck, deckValue, settingsValue, deckField } from '../stores'
     import {
         hideLoadingModal,
         showConfirmModal,
         showConfirmModalPromise,
         showErrorModal,
         showLoadingModal,
-        showNewDeckModal
+        showNewDeckModal,
     } from '../modals'
     import { showSuccessToast } from '../toasts'
     import { save } from '@tauri-apps/api/dialog'
-import { Deck } from '../models';
+    import { Deck } from '../models'
 
-    async function onDeckSelected() {
+    const deckName = deckField('name')
+
+    async function onOpenDeck() {
         if (!deckPath()) {
             $deck = null
             return
@@ -22,11 +24,8 @@ import { Deck } from '../models';
         try {
             $deck = JSON.parse(await invoke('open_deck', { dir: deckPath() }))
         } catch (err) {
-            if (err.includes("does not exist")) {
-                showConfirmModal(
-                    'Deck not found, start a new one?',
-                    () => onStartNewDeck()
-                )
+            if (err.includes('does not exist')) {
+                showConfirmModal('Deck not found, start a new one?', () => onStartNewDeck())
             } else {
                 showErrorModal(null, err)
                 deckPathField.clear()
@@ -55,7 +54,7 @@ import { Deck } from '../models';
             return
         }
         $deckPathField.value = path
-        onDeckSelected()
+        onOpenDeck()
     }
 
     async function onWrite() {
@@ -71,12 +70,12 @@ import { Deck } from '../models';
         try {
             let dest = await save({
                 defaultPath: 'out',
-                filters: [{ name: 'Anki Package', extensions: ['apkg'] }]
+                filters: [{ name: 'Anki Package', extensions: ['apkg'] }],
             })
             if (!dest) return
 
             const template_exists = await invoke('check_template', { dir: deckPath() })
-            
+
             if (!template_exists) {
                 const ok = await showConfirmModalPromise('No template found, generate one?')
                 if (!ok) {
@@ -106,7 +105,7 @@ import { Deck } from '../models';
             showSuccessToast('Backup restored')
         } catch (err) {
             if (err.includes('file not found')) {
-                showErrorModal('Backup file not found')                
+                showErrorModal('Backup file not found')
             } else {
                 showErrorModal(null, err)
             }
@@ -116,9 +115,9 @@ import { Deck } from '../models';
 
 <section>
     <h2 class="title">Choose Deck</h2>
-    <FileUploader id="deck" file={deckPathField} options={{ directory: true }} on:change={onDeckSelected}/>
+    <FileUploader id="deck" file={deckPathField} options={{ directory: true }} on:change={onOpenDeck} />
     {#if $deck}
-        <h2 class="success-text">{deckValue('name')}</h2>
+        <h2 class="success-text">{$deckName.value}</h2>
         <div class="deck-info">
             <h3>Note Count:&nbsp;&nbsp;{$deck.notes.length}</h3>
             {#if $deck.notes.length > 0}
@@ -140,15 +139,15 @@ import { Deck } from '../models';
     }
 
     .success-text {
-        margin-top: .3em;
-        margin-bottom: .2em;
+        margin-top: 0.3em;
+        margin-bottom: 0.2em;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
     .deck-info > *:not(:last-child) {
-        margin-bottom: .2em;
+        margin-bottom: 0.2em;
     }
 
     .form-button {

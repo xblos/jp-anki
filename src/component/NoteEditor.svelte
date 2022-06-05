@@ -3,9 +3,21 @@
     import FileUploader from './FileUploader.svelte'
     import FormInput from './FormInput.svelte'
     import FormTextArea from './FormTextArea.svelte'
-    import { noteForm, noteField, addNote, noteValue, deck, deckPath, jsonDeck, words, nextNoteId, curNoteId } from '../stores'
+    import {
+        noteForm,
+        noteField,
+        addNote,
+        noteValue,
+        deck,
+        deckPath,
+        jsonDeck,
+        words,
+        nextNoteId,
+        curNoteId,
+deckValue,
+    } from '../stores'
     import { Note } from '../models'
-    import { showSuccessToast } from '../toasts';
+    import { showSuccessToast } from '../toasts'
     import { showConfirmModal, showConfirmModalPromise, showErrorModal } from '../modals'
     import { invoke } from '@tauri-apps/api/tauri'
     import { prettifyFormErrors } from '../util/form'
@@ -21,7 +33,7 @@
 
         if (words.includes(noteValue('word'))) {
             const ok = await showConfirmModalPromise(`${noteValue('word')} already exists, continue?`)
-            if (!ok) return;
+            if (!ok) return
         }
 
         if ($noteForm.errors.length > 0) {
@@ -40,7 +52,8 @@
                 await invoke('move_media', {
                     destDir: deckPath(),
                     srcFile: noteValue('media'),
-                    id: curNoteId()
+                    deckId: deckValue('id'),
+                    noteId: curNoteId(),
                 })
             } catch (err) {
                 showErrorModal('Failed to move media file', err)
@@ -48,15 +61,17 @@
             }
         }
 
-        addNote(new Note(
-            noteValue<string>('word'),
-            noteValue<string>('reading') || null,
-            noteValue<string>('definition'),
-            sanitizeTranscription(noteValue('transcription')),
-            !!noteValue('useReading'),
-            null,
-            curNoteId()
-        ))
+        addNote(
+            new Note(
+                noteValue<string>('word'),
+                noteValue<string>('reading') || null,
+                noteValue<string>('definition'),
+                sanitizeTranscription(noteValue('transcription')),
+                !!noteValue('useReading'),
+                null,
+                curNoteId()
+            )
+        )
 
         try {
             await invoke('write_backup', { dir: deckPath(), json: jsonDeck() })
@@ -77,16 +92,16 @@
 </script>
 
 <section class="form">
-    <FormInput id="word" value={noteField('word')}/>
+    <FormInput id="word" value={noteField('word')} />
     <label for="reading">Reading</label>
     <div id="reading" class="combined-input">
-        <FormInput value={noteField('reading')}/>
-        <Checkbox value={noteField('useReading')}/>
+        <FormInput value={noteField('reading')} />
+        <Checkbox value={noteField('useReading')} />
     </div>
-    <FormInput id="definition" value={noteField('definition')}/>
-    <FormTextArea id="transcription" value={noteField('transcription')}/>
+    <FormInput id="definition" value={noteField('definition')} />
+    <FormTextArea id="transcription" value={noteField('transcription')} />
     <label for="media">Media</label>
-    <FileUploader id="media" file={noteField('media')}/>
+    <FileUploader id="media" file={noteField('media')} />
     <div class="button-bar">
         <button class="form-button" on:click={onClear}>Clear</button>
         <button class="form-button" on:click={onAdd}>Add</button>

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Field } from 'svelte-forms/types';
+    import type { Field } from 'svelte-forms/types'
     import type { Writable } from 'svelte/store'
     import { capitalize } from '../util/string'
 
@@ -10,4 +10,4 @@
 {#if id !== '__input'}
     <label for={id}>{capitalize(id)}</label>
 {/if}
-<textarea {id} class="form-textarea" type="text" bind:value={$value.value} autocomplete="off"/>
+<textarea {id} class="form-textarea" type="text" bind:value={$value.value} autocomplete="off" />
