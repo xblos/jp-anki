@@ -1,0 +1,26 @@
+<div class="front content">
+    <p class="jp-font reading">{{furigana:Reading}}</p>
+    {{#Pronunciation}}
+    <div class="hspacer"></div>
+    <div>
+        {{Pronunciation}}
+    </div>
+    {{/Pronunciation}}
+</div>
+<hr />
+<div class="back">
+    <div class="definition">
+        {{Definition}}
+    </div>
+    {{#Media}}
+    <div id="media">
+        {{Media}}
+    </div>
+    {{/Media}}
+    <div class="jp-font transcription">
+        {{Transcription}}
+    </div>
+</div>
+<script>
+    document.querySelector("#media .soundLink, #media .replaybutton")?.click()
+</script>

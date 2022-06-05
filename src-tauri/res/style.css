@@ -1,0 +1,107 @@
+:root {
+    --color: white;
+    --accent-color: rgb(255, 62, 0);
+    --accent-color-bg: rgb(92, 23, 0);
+    --color-success: rgb(76, 129, 76);
+    --border-focus-color: rgb(134, 134, 134);
+    --accent-color-secondary: rgb(127, 122, 192);
+    --background-color: rgb(33, 33, 33);
+    --background-color-darker: rgb(29, 29, 29);
+    --border-color: rgb(63, 63, 63);
+    --button-color: rgb(41, 41, 41);
+    --sidebar-width: 3em;
+}
+
+@font-face {
+    font-family: JPAnkiFont;
+    src: url("_jpaf.ttf");
+}
+
+body {
+    color: var(--color) !important;
+    background-color: var(--background-color) !important;
+    padding: 2em 10%;
+}
+
+.front {
+    padding-top: 10px;
+    margin-bottom: -10px;
+    font-family: "Montserrat", sans-serif;
+}
+
+.content {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+}
+
+.hspacer {
+    width: 100%
+}
+
+.card-title,
+.instruction {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.jp-font {
+    font-family: JPAnkiFont;
+    font-weight: 500;
+}
+
+.word ruby rt {
+    visibility: hidden;
+}
+
+.word,
+.reading {
+    white-space: nowrap;
+    font-size: 32px;
+}
+
+.definition {
+    font-size: 24px;
+    margin-bottom: 0;
+}
+
+.transcription {
+    font-size: 20px;
+}
+
+.back>*:not(:last-child) {
+    margin-bottom: 1em;
+}
+
+/* ------------------------------ */
+
+hr {
+    color: var(--color) !important;
+    filter: brightness(30%);
+    border: 0;
+    border-bottom: 1px solid;
+    margin: 3em 0;
+}
+
+button {
+    color: var(--color) !important;
+    min-width: 7em !important;
+    height: 2.5em !important;
+    white-space: nowrap;
+    font-size: 20px !important;
+    font-weight: 200 !important;
+    background: transparent !important;
+    background-color: var(--button-color) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 0 !important;
+    -webkit-appearance: none !important;
+}
+
+button:hover {
+    filter: brightness(120%);
+}
+
+button:active {
+    background-color: var(--button-color) !important;
+    filter: brightness(120%);
+}

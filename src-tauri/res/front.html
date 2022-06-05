@@ -1,0 +1,39 @@
+{{#Reading}}
+<div class="front">
+    <div id="step-1" class="content">
+        <p class="jp-font word">{{furigana:Reading}}</p>
+        <div class="hspacer"></div>
+        <button id="showReadingButton" onClick='showReading()'>Show Reading</button>
+    </div>
+    <div id="step-2" class="content" style="display: none">
+        <p class="jp-font reading">{{furigana:Reading}}</p>
+        {{#Pronunciation}}
+        <div class="hspacer"></div>
+        <div id="audio">
+            {{Pronunciation}}
+        </div>
+        {{/Pronunciation}}
+    </div>
+</div>
+<script>
+    function showReading() {
+        document.getElementById("step-1").style.display = "none"
+        document.getElementById("step-2").style = ""
+        document.querySelector("#audio .soundLink, #audio .replaybutton")?.click()
+    }
+</script>
+{{/Reading}}
+{{^Reading}}
+<div class="front content">
+    <p class="jp-font reading">{{furigana:Reading}}</p>
+    {{#Pronunciation}}
+    <div class="hspacer"></div>
+    <div id="audio">
+        {{Pronunciation}}
+    </div>
+    {{/Pronunciation}}
+</div>
+<script>
+    document.querySelector("#audio .soundLink, #audio .replaybutton")?.click()
+</script>
+{{/Reading}}
