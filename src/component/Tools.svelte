@@ -96,10 +96,6 @@
         min-width: 7em;
     }
 
-    .hide {
-        display: none;
-    }
-
     label {
         float: none;
     }
