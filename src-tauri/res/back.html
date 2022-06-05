@@ -1,5 +1,10 @@
 <div class="front content">
+    {{#Reading}}
     <p class="jp-font reading">{{furigana:Reading}}</p>
+    {{/Reading}}
+    {{^Reading}}
+    <p class="jp-font reading">{{Word}}</p>
+    {{/Reading}}
     {{#Pronunciation}}
     <div class="hspacer"></div>
     <div>
