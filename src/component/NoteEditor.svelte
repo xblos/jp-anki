@@ -14,7 +14,7 @@
         words,
         nextNoteId,
         curNoteId,
-deckValue,
+        deckValue,
     } from '../stores'
     import { Note } from '../models'
     import { showSuccessToast } from '../toasts'
