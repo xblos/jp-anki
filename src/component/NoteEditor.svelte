@@ -59,6 +59,14 @@
                 showErrorModal('Failed to move media file', err)
                 return
             }
+        } else {
+            if (!await showConfirmModalPromise('No media selected. Continue?'))
+                return
+        }
+
+        if (noteValue('useReading') && !noteValue('reading')) {
+            showErrorModal('Missing required fields', 'Use Reading checkbox is marked, but the Reading field is empty')
+            return
         }
 
         addNote(

@@ -32,6 +32,11 @@
         }
     }
 
+    function onClear() {
+        $file.value = null
+        onChange()
+    }
+
     onDestroy(async () => unlisten && (await unlisten).call(null))
 </script>
 
@@ -44,6 +49,7 @@
             <p id='filename'>
                 {$file.value?.replace(/.*[\/\\]/, '') || 'No file selected'}
             </p>
+            <button class="file-uploader" on:click="{onClear}">Clear</button>
         </div>
     </div>
 </section>
@@ -68,10 +74,12 @@
     }
 
     #filename {
+        width: 100%;
         margin-left: 0.5em;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
+        text-align: left;
         filter: brightness(50%);
     }
 

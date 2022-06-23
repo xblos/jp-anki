@@ -5,6 +5,21 @@ export function capitalize(str: string): string {
         .join(' ')
 }
 
+export function ignoreRuby(str: string): string {
+    const buf = []
+    let open = false
+    for (const c of str) {
+        if (c === '「' || c === '[') {
+            open = true
+        } else if (c === '」' || c === ']') {
+            open = false
+        } else if (!open) {
+            buf.push(c)
+        }
+    }
+    return buf.join('')
+}
+
 export function sanitizeTranscription(tr: string) {
     const buf = []
     for (const c of tr) {

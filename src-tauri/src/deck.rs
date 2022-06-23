@@ -1,5 +1,6 @@
 use crate::audio::AudioError;
 use crate::audio;
+use crate::ext::string::StringExt;
 use crate::file;
 use std::path::Path;
 use std::convert::AsRef;
@@ -185,7 +186,11 @@ impl Package {
         let mut media_list: Vec<String> = Vec::new();
 
         for (index, note) in self.deck.notes.iter_mut().enumerate() {
-            let reading = if let Some(reading) = &note.reading {
+            let word_contains_reading = note.word.contains("[");
+
+            let reading = if word_contains_reading {
+                note.word.replace_ruby_parentheses()
+            } else if let Some(reading) = &note.reading {
                 if note.use_reading {
                     reading.to_string()
                 } else {
@@ -193,6 +198,14 @@ impl Package {
                 }
             } else {
                 String::new()
+            };
+                        
+            let word = if word_contains_reading {
+                note.word.ignore_ruby()
+            } else if note.use_reading {
+                reading.clone()
+            } else {
+                note.word.clone()
             };
 
             let id = note.id.with_context(|| format!("Note {} has no ID", note.word))?;
@@ -216,12 +229,12 @@ impl Package {
             }
             
             let guid = format!("{}{}", filename, self.deck.id);
-
+            
             deck.add_note(genanki_rs::Note::new_with_options(
                 self.template.to_model(self.deck.id, &self.deck.name),
                 vec![
                     &(index + 1).to_string(),
-                    if note.use_reading { &reading } else { &note.word },
+                    &word,
                     if note.use_reading { "" } else { &reading },
                     &note.definition,
                     &pronunciation,

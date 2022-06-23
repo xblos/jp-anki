@@ -15,8 +15,8 @@ export function showErrorModal(msg?: string, desc?: any) {
     errorModal.set(bind(Error, { msg, desc }))
 }
 
-export function showConfirmModal(msg: string, handler: () => void) {
-    confirmModal.set(bind(Confirm, { msg, handler: (ok: boolean) => { if (ok) handler() } }))
+export function showConfirmModal(msg: string, confirm: () => void, cancel?: () => void) {
+    confirmModal.set(bind(Confirm, { msg, handler: (ok: boolean) => { if (ok) confirm(); else cancel?.call(null) } }))
 }
 
 export function showConfirmModalPromise(msg: string): Promise<boolean> {

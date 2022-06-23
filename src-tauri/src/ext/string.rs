@@ -2,6 +2,8 @@ use anyhow::{Context, Result};
 
 pub trait StringExt {
     fn extract(&self, start_tag: &str, end_tag: Option<&str>) -> Result<&str>;
+    fn ignore_ruby(&self) -> String;
+    fn replace_ruby_parentheses(&self) -> String;
 }
 
 impl StringExt for String {
@@ -27,6 +29,39 @@ impl StringExt for String {
             })?.trim();
 
         Ok(ss)
+    }
+
+    fn ignore_ruby(&self) -> String {
+        let mut open = false;
+        let mut buf = String::new();
+
+        for c in self.chars() {
+            if c == '「' || c == '[' {
+                open = true;
+            } else if c == '」' || c == ']' {
+                open = false;
+            } else if !open {
+                buf.push(c);
+            }
+        }
+
+        buf
+    }
+
+    fn replace_ruby_parentheses(&self) -> String {
+        let mut buf = String::new();
+
+        for c in self.chars() {
+            if c == '「' {
+                buf.push('[');
+            } else if c == '」' {
+                buf.push(']');
+            } else {
+                buf.push(c);
+            }
+        }
+
+        buf
     }
 }
 

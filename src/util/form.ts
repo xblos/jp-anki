@@ -1,8 +1,29 @@
-import type { Field } from 'svelte-forms/types'
+import type { Field, Form as SvelteForm } from 'svelte-forms/types'
 import { get, Readable, Writable } from 'svelte/store'
 
 export type WritableField = Writable<Field<any>>
 export type ReadableField = Readable<Field<any>>
+
+export type Form = {
+    subscribe: (this: void, run: import("svelte/store").Subscriber<{
+        valid: boolean;
+        dirty: boolean;
+        readonly summary: {};
+        errors: string[];
+        hasError(this: SvelteForm, name: string): boolean;
+    }>, invalidate?: (value?: {
+        valid: boolean;
+        dirty: boolean;
+        readonly summary: {};
+        errors: string[];
+        hasError(this: SvelteForm, name: string): boolean;
+    }) => void) => import("svelte/store").Unsubscriber;
+    reset: () => void;
+    validate: () => Promise<void>;
+    getField: (name: string) => Writable<Field<any>> | Readable<Field<any>>;
+    summary: () => Record<string, any>;
+    clear: () => void;
+};
 
 export function prettifyFormErrors(form: any): string {
     const errors = get<any>(form).errors

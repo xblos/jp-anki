@@ -13,6 +13,7 @@
     import { showSuccessToast } from '../toasts'
     import { save } from '@tauri-apps/api/dialog'
     import { Deck } from '../models'
+import { ignoreRuby } from '../util/string';
 
     const deckName = deckField('name')
 
@@ -25,7 +26,11 @@
             $deck = JSON.parse(await invoke('open_deck', { dir: deckPath() }))
         } catch (err) {
             if (err.includes('does not exist')) {
-                showConfirmModal('Deck not found, start a new one?', () => onStartNewDeck())
+                showConfirmModal(
+                    'Deck not found, start a new one?',
+                    () => onStartNewDeck(),
+                    () => deckPathField.clear()
+                )
             } else {
                 showErrorModal(null, err)
                 deckPathField.clear()
@@ -121,7 +126,7 @@
         <div class="deck-info">
             <h3>Note Count:&nbsp;&nbsp;{$deck.notes.length}</h3>
             {#if $deck.notes.length > 0}
-                <h3>Last added word:&nbsp;&nbsp;{$deck.notes.at(-1).word}</h3>
+                <h3>Last added word:&nbsp;&nbsp;{ignoreRuby($deck.notes.at(-1).word)}</h3>
             {/if}
         </div>
         <button class="form-button" on:click={onWrite}>Write</button>

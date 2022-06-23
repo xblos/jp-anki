@@ -4,26 +4,14 @@ import { pattern, required } from 'svelte-forms/validators'
 import { get, writable } from 'svelte/store'
 import { Deck, Settings } from './models'
 import type { Note } from './models'
-import { fieldValue, setField, WritableField, writableField } from './util/form'
+import { fieldValue, Form, setField, WritableField, writableField } from './util/form'
 
 export const deck = writable<Deck>(null)
 export let words: string[] = []
 
-const defaultDir = field('defaultDir', '')
-
-const word = field('word', '', [required()])
-const reading = field('reading', '')
-const useReading = field('useReading', false)
-const definition = field('definition', '', [required()])
-const media = field('media', '')
-const transcription = field('transcription', '', [required()])
-
-const deckName = field('name', '', [required()])
-const deckId = field('id', '', [required(), pattern(/\d+/)])
-
-export const settingsForm = form(defaultDir)
-export const noteForm = form(word, reading, useReading, definition, transcription, media)
-export const deckForm = form(deckName, deckId)
+export const settingsForm = createSettingsForm()
+export const deckForm = createDeckForm()
+export const noteForm = createNoteForm()
 export const deckPathField = field('deckPath', '', [required()])
 
 let maxNoteId = 0
@@ -117,4 +105,28 @@ export function addNote(note: Note) {
         value.notes.push(note)
         return value
     })
+}
+
+function createSettingsForm(): Form {
+    return form(
+        field('defaultDir', '')
+    )
+}
+
+function createNoteForm(): Form {
+    return form(
+        field('word', '', [required()]),
+        field('reading', ''),
+        field('useReading', false),
+        field('definition', '', [required()]),
+        field('media', ''),
+        field('transcription', '', [required()])
+    )
+}
+
+function createDeckForm(): Form {
+    return form(
+        field('name', '', [required()]),
+        field('id', '', [required(), pattern(/\d+/)])
+    )
 }
