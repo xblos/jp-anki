@@ -2,6 +2,7 @@ use anyhow::{Context, Result};
 
 pub trait StringExt {
     fn extract(&self, start_tag: &str, end_tag: Option<&str>) -> Result<&str>;
+    fn contains_ruby(&self) -> bool;
     fn ignore_ruby(&self) -> String;
     fn replace_ruby_parentheses(&self) -> String;
 }
@@ -29,6 +30,15 @@ impl StringExt for String {
             })?.trim();
 
         Ok(ss)
+    }
+
+    fn contains_ruby(&self) -> bool {
+        for c in self.chars() {
+            if c == '「' || c == '[' {
+                return true;
+            }
+        }
+        false
     }
 
     fn ignore_ruby(&self) -> String {

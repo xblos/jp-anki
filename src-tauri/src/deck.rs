@@ -186,7 +186,7 @@ impl Package {
         let mut media_list: Vec<String> = Vec::new();
 
         for (index, note) in self.deck.notes.iter_mut().enumerate() {
-            let word_contains_reading = note.word.contains("[");
+            let word_contains_reading = note.word.contains_ruby();
 
             let reading = if word_contains_reading {
                 note.word.replace_ruby_parentheses()
