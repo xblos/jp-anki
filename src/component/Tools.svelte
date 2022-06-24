@@ -4,8 +4,8 @@
     import { showSuccessToast } from '../toasts'
     import { showConfirmModalPromise, showErrorModal } from '../modals'
     import { invoke } from '@tauri-apps/api'
-    import FormInput from './FormInput.svelte'
     import { open } from '@tauri-apps/api/dialog'
+    import PreviewInput from './PreviewInput.svelte'
 
     async function onChangeDefaultDir() {
         try {
@@ -71,7 +71,7 @@
     <h2 class="title">Config</h2>
     <label for="default-dir">Default Directory</label>
     <div id="default-dir" class="combined-input">
-        <FormInput value={settingsField('defaultDir')} disabled={true}/>
+        <PreviewInput value={settingsField('defaultDir')} />
         <button class="form-button conf-button" on:click={onChangeDefaultDir}>Change</button>
     </div>
     <h2 class="title">Tools</h2>

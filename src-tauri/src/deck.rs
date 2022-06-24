@@ -2,6 +2,7 @@ use crate::audio::AudioError;
 use crate::audio;
 use crate::ext::string::StringExt;
 use crate::file;
+use crate::furigana::generate_ruby_string;
 use std::path::Path;
 use std::convert::AsRef;
 use strum_macros::{AsRefStr, Display};
@@ -189,19 +190,20 @@ impl Package {
             let word_contains_reading = note.word.contains_ruby();
 
             let reading = if word_contains_reading {
-                note.word.replace_ruby_parentheses()
+                note.word.format_ruby()
             } else if let Some(reading) = &note.reading {
                 if note.use_reading {
                     reading.to_string()
                 } else {
-                    format!("{}[{}]", note.word, reading)
+                    generate_ruby_string(&note.word, reading)
+                        .with_context(|| format!("Failed to generate ruby string for {}({})", note.word, reading))?
                 }
             } else {
                 String::new()
             };
                         
             let word = if word_contains_reading {
-                note.word.ignore_ruby()
+                note.word.remove_ruby()
             } else if note.use_reading {
                 reading.clone()
             } else {

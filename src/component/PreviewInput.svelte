@@ -8,7 +8,6 @@
     export let showLabel: boolean = true
     export let label: string = null
     export let value: Writable<Field<string>>
-    export let disabled = false
     export let placeholder = null
     export let changeDelay = 400
 
@@ -26,4 +25,4 @@
 {#if showLabel && id !== '__input'}
     <label class="form-label" for={id}>{label || capitalize(id)}</label>
 {/if}
-<input {id} class="form-input" type="text" bind:value={$value.value} {placeholder} on:input={onChange} autocomplete="new-password" {disabled} />
+<input {id} class="preview-input" type="text" bind:value={$value.value} {placeholder} on:input={onChange} disabled={true} />

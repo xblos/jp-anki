@@ -20,7 +20,7 @@
     export let url = '/'
 
     const iconScale = 1.3
-
+    
     onMount(async () => {
         try {
             await loadSettings()
@@ -89,7 +89,7 @@
         --color: white;
         --accent-color: rgb(255, 62, 0);
         --accent-color-bg: rgb(92, 23, 0);
-        --color-success: rgb(76, 129, 76);
+        --success-color: rgb(76, 129, 76);
         --border-focus-color: rgb(134, 134, 134);
         --accent-color-secondary: rgb(127, 122, 192);
         --background-color: rgb(33, 33, 33);
@@ -143,7 +143,7 @@
     }
 
     :global(.success-text) {
-        color: var(--color-success);
+        color: var(--success-color);
     }
 
     :global(label:not(.file-uploader, .checkbox-label)) {
@@ -162,10 +162,14 @@
         margin: 0 auto;
     }
 
-    :global(.form-input, .form-textarea, .form-button) {
+    :global(.form-input, .form-textarea, .form-button, .preview-input) {
         display: inline-block;
         width: 100%;
         margin: 1em 0;
+    }
+
+    :global(.preview-input) {
+        filter: brightness(90%);
     }
 
     :global(.form-textarea) {

@@ -13,7 +13,7 @@
     import { showSuccessToast } from '../toasts'
     import { save } from '@tauri-apps/api/dialog'
     import { Deck } from '../models'
-import { ignoreRuby } from '../util/string';
+    import { ignoreRuby } from '../util/string'
 
     const deckName = deckField('name')
 

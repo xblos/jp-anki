@@ -15,15 +15,21 @@ fn test_template() {
 }
 
 #[test]
-fn test_ignore_between() {
+fn test_remove_ruby() {
     let s = "頭[あたま]がいっぱい".to_string();
-    assert_eq!("頭がいっぱい", s.ignore_ruby());
+    assert_eq!("頭がいっぱい", s.remove_ruby());
     let s = "女[おんな]の子[こ]".to_string();
-    assert_eq!("女の子", s.ignore_ruby());
+    assert_eq!("女の子", s.remove_ruby());
 }
 
 #[test]
-fn test_replace_ruby_parenthesis() {
-    let s = "男「おとこ」の子「こ」".to_string();
-    assert_eq!("男[おとこ]の子[こ]", s.replace_ruby_parentheses());
+fn test_format_ruby() {
+    let s = "女「おんな」の子「こ」".to_string();
+    assert_eq!("女[おんな]の 子[こ]", s.format_ruby());
+    let s = "いい加減「かげん」".to_string();
+    assert_eq!("いい 加減[かげん]", s.format_ruby());
+    let s = "偉[えら]い".to_string();
+    assert_eq!(s, s.format_ruby());
+    let s = "頭「あたま」がいい".to_string();
+    assert_eq!("頭[あたま]がいい", s.format_ruby());
 }

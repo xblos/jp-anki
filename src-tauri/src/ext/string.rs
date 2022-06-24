@@ -1,10 +1,12 @@
 use anyhow::{Context, Result};
 
+use super::char::CharExt;
+
 pub trait StringExt {
     fn extract(&self, start_tag: &str, end_tag: Option<&str>) -> Result<&str>;
     fn contains_ruby(&self) -> bool;
-    fn ignore_ruby(&self) -> String;
-    fn replace_ruby_parentheses(&self) -> String;
+    fn remove_ruby(&self) -> String;
+    fn format_ruby(&self) -> String;
 }
 
 impl StringExt for String {
@@ -41,7 +43,7 @@ impl StringExt for String {
         false
     }
 
-    fn ignore_ruby(&self) -> String {
+    fn remove_ruby(&self) -> String {
         let mut open = false;
         let mut buf = String::new();
 
@@ -58,17 +60,26 @@ impl StringExt for String {
         buf
     }
 
-    fn replace_ruby_parentheses(&self) -> String {
+    fn format_ruby(&self) -> String {
         let mut buf = String::new();
+        let mut separate = true;
 
         for c in self.chars() {
-            if c == '「' {
-                buf.push('[');
-            } else if c == '」' {
-                buf.push(']');
-            } else {
-                buf.push(c);
+            if separate && c.is_kanji() {
+                buf.push(' ');
+                separate = false;
+            } else if c.is_closed_ruby_parenthesis() {
+                separate = true;
             }
+            match c {
+                '「' => buf.push('['),
+                '」' => buf.push(']'),
+                _ => buf.push(c)
+            }
+        }
+
+        if buf.starts_with(' ') {
+            buf.remove(0);
         }
 
         buf

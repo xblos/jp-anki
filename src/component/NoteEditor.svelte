@@ -21,7 +21,15 @@
     import { showConfirmModal, showConfirmModalPromise, showErrorModal } from '../modals'
     import { invoke } from '@tauri-apps/api/tauri'
     import { prettifyFormErrors } from '../util/form'
-    import { sanitizeTranscription } from '../util/string'
+    import { formatRuby, isRubyString, sanitizeTranscription } from '../util/string'
+    import { field } from 'svelte-forms'
+    import { generateRubyString } from '../util/kanji'
+    import PreviewInput from './PreviewInput.svelte'
+    import { onMount } from 'svelte'
+
+    const notePreview = field('preview', '')
+    
+    onMount(() => onWordChange())
 
     async function onAdd() {
         if (!$deck) {
@@ -97,15 +105,31 @@
     async function onClear() {
         showConfirmModal('Reset all fields?', () => noteForm.clear())
     }
+
+    function onWordChange() {
+        const word: string = noteValue('word')
+        const reading: string = noteValue('reading')
+        const isRuby = isRubyString(word)
+        if (word && reading && !isRuby) {
+            try {
+                $notePreview.value = generateRubyString(word, reading)
+            } catch (err) {
+                $notePreview.value = '???'
+            }
+        } else {
+            $notePreview.value = isRuby ? formatRuby(word) : word
+        }
+    }
 </script>
 
 <section class="form">
-    <FormInput id="word" value={noteField('word')} />
+    <FormInput id="word" value={noteField('word')} on:change={onWordChange} />
     <label for="reading">Reading</label>
     <div id="reading" class="combined-input">
-        <FormInput value={noteField('reading')} />
+        <FormInput value={noteField('reading')} on:change={onWordChange} />
         <Checkbox value={noteField('useReading')} />
     </div>
+    <PreviewInput id="preview" value={notePreview} />
     <FormInput id="definition" value={noteField('definition')} />
     <FormTextArea id="transcription" value={noteField('transcription')} />
     <label for="media">Media</label>

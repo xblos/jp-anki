@@ -1,8 +1,14 @@
+import { isKanji } from './kanji'
+
 export function capitalize(str: string): string {
     if (!str) return str
     return str.split(/[- ]/)
         .map(w => w[0].toUpperCase() + w.substring(1))
         .join(' ')
+}
+
+export function isRubyString(str: string): boolean {
+    return /[「[]/.test(str)
 }
 
 export function ignoreRuby(str: string): string {
@@ -17,6 +23,36 @@ export function ignoreRuby(str: string): string {
             buf.push(c)
         }
     }
+    return buf.join('')
+}
+
+export function formatRuby(str: string): string {
+    const buf: string[] = []
+    let separate = true
+
+    for (const c of str) {
+        if (separate && isKanji(c)) {
+            buf.push(' ')
+            separate = false
+        } else if (c === '」' || c === ']') {
+            separate = true
+        }
+        switch (c) {
+            case '「':
+                buf.push('[')
+                break
+            case '」':
+                buf.push(']')
+                break
+            default:
+                buf.push(c)
+        }
+    }
+
+    if (buf[0] === ' ') {
+        buf.shift()
+    }
+
     return buf.join('')
 }
 
