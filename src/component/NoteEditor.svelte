@@ -20,14 +20,16 @@
     import { showSuccessToast } from '../toasts'
     import { showConfirmModal, showConfirmModalPromise, showErrorModal } from '../modals'
     import { invoke } from '@tauri-apps/api/tauri'
-    import { prettifyFormErrors } from '../util/form'
+    import { prettifyFormErrors, setField } from '../util/form'
     import { formatRuby, isRubyString, sanitizeTranscription } from '../util/string'
     import { field } from 'svelte-forms'
-    import { rubify } from '../util/kanji'
+    import { rubify, rubifyText } from '../util/kanji'
     import PreviewInput from './PreviewInput.svelte'
     import { onMount } from 'svelte'
+    import PreviewTextArea from './PreviewTextArea.svelte'
 
-    const notePreview = field('preview', '')
+    const wordPreview = field('wordPreview', '')
+    const trPreview = field('trPreview', '')
     
     onMount(() => onWordChange())
 
@@ -82,12 +84,19 @@
             }
         }
 
+        let transcription: string
+        try {
+            transcription = rubifyText(sanitizeTranscription(noteValue('transcription')))
+        } catch (err) {
+            showErrorModal('Error while parsing transcription', err)
+        }
+
         addNote(
             new Note(
                 noteValue<string>('word'),
                 noteValue<string>('reading') || null,
                 noteValue<string>('definition'),
-                sanitizeTranscription(noteValue('transcription')),
+                transcription,
                 !!noteValue('useReading'),
                 null,
                 curNoteId()
@@ -104,14 +113,14 @@
         noteForm.clear()
 
         nextNoteId()
-        $notePreview.value = null
+        clearPreviews()
         showSuccessToast('Note added')
     }
 
     async function onClear() {
         showConfirmModal('Reset all fields?', () => {
             noteForm.clear()
-            $notePreview.value = null
+            clearPreviews()
         })
     }
 
@@ -121,13 +130,48 @@
         const isRuby = isRubyString(word)
         if (word && reading && !isRuby) {
             try {
-                $notePreview.value = rubify(word, reading)
+                $wordPreview.value = rubify(word, reading)
             } catch (err) {
-                $notePreview.value = '???'
+                $wordPreview.value = '???'
             }
         } else {
-            $notePreview.value = isRuby ? formatRuby(word) : word
+            $wordPreview.value = isRuby ? formatRuby(word) : word
         }
+    }
+
+    function onTrChange() {
+        try {
+            $trPreview.value = sanitizeTranscription(rubifyText(noteValue('transcription')))
+        } catch (err) {
+            $trPreview.value = '???'
+        }
+    }
+
+    function onInsertRubySeparators(ev: CustomEvent) {
+        const start = ev.detail.domRef.selectionStart
+        const end = ev.detail.domRef.selectionEnd
+
+        let tr: string = noteValue('transcription')
+        let trl = tr.slice(0, start) + '|'
+        let trm = tr.slice(start, end)
+        let trr = '|' + tr.slice(end)
+
+        setField(noteForm, 'transcription', trl + trm + trr)
+
+        setTimeout(() => ev.detail.domRef.setSelectionRange(end + 1, end + 1), 0)
+    }
+
+    function onNextSeparator(ev: CustomEvent) {
+        const i = ev.detail.domRef.selectionStart
+        const tr: string = noteValue('transcription')
+        const sep = tr.indexOf('|', i)
+        if (sep >= 0)
+            setTimeout(() =>  ev.detail.domRef.setSelectionRange(sep + 1, sep + 1), 0)
+    }
+
+    function clearPreviews() {
+        $trPreview.value = null
+        $wordPreview.value = null
     }
 </script>
 
@@ -138,9 +182,16 @@
         <FormInput value={noteField('reading')} on:change={onWordChange} />
         <Checkbox value={noteField('useReading')} />
     </div>
-    <PreviewInput id="preview" value={notePreview} />
+    <PreviewInput id="word-preview" value={wordPreview} />
     <FormInput id="definition" value={noteField('definition')} />
-    <FormTextArea id="transcription" value={noteField('transcription')} />
+    <FormTextArea
+        id="transcription"
+        value={noteField('transcription')}
+        on:change={onTrChange}
+        on:ctrlSpace={onInsertRubySeparators}
+        on:ctrlEnter={onNextSeparator}
+        changeDelay={700} />
+    <PreviewTextArea id="transcription-preview" value={trPreview} />
     <label for="media">Media</label>
     <FileUploader id="media" file={noteField('media')} />
     <div class="button-bar">

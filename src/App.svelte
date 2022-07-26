@@ -162,17 +162,17 @@
         margin: 0 auto;
     }
 
-    :global(.form-input, .form-textarea, .form-button, .preview-input) {
+    :global(.form-input, .form-textarea, .form-button, .preview-input, .preview-text-area) {
         display: inline-block;
         width: 100%;
         margin: 1em 0;
     }
 
-    :global(.preview-input) {
+    :global(.preview-input, .preview-text-area) {
         filter: brightness(90%);
     }
 
-    :global(.form-textarea) {
+    :global(.form-textarea, .preview-text-area) {
         height: 5.5em;
         resize: none;
     }

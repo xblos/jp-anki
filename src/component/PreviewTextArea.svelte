@@ -5,12 +5,14 @@
     import { capitalize } from '../util/string'
 
     export let id = '__input'
+    export let showLabel: boolean = true
+    export let label: string = null
     export let value: Writable<Field<string>>
+    export let placeholder = null
     export let changeDelay = 400
 
     let dispatch = createEventDispatcher()
     let changeId: any = null
-    let domRef: any
 
     async function onChange() {
         if (changeId != null) {
@@ -18,16 +20,9 @@
         }
         changeId = setTimeout(() => dispatch('change'), changeDelay)
     }
-
-    function onKeyPress(ev: KeyboardEvent) {
-        if (ev.ctrlKey && ev.key === 'Enter')
-            dispatch('ctrlEnter', { domRef })
-        else if (ev.ctrlKey && ev.key === ' ')
-            dispatch('ctrlSpace', { domRef })
-    }
 </script>
 
-{#if id !== '__input'}
-    <label for={id}>{capitalize(id)}</label>
+{#if showLabel && id !== '__input'}
+    <label class="form-label" for={id}>{label || capitalize(id)}</label>
 {/if}
-<textarea {id} class="form-textarea" type="text" bind:value={$value.value} autocomplete="off" on:input={onChange} on:keydown={onKeyPress} bind:this={domRef} />
+<textarea {id} class="preview-text-area" type="text" bind:value={$value.value} {placeholder} on:input={onChange} disabled={true} />
