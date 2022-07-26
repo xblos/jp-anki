@@ -1,4 +1,4 @@
-use app::furigana::{generate_furigana, generate_ruby_string};
+use app::kanji::{generate_furigana, rubify};
 
 #[test]
 fn test_generate_furigana() {
@@ -22,7 +22,7 @@ fn test_generate_furigana() {
 
 #[test]
 fn test_generate_ruby_string() {
-    let s = generate_ruby_string(
+    let s = rubify(
         "今日は本当に暑いね",
         "きょうはほんとうにあついね"
     ).unwrap();

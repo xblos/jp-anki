@@ -23,7 +23,7 @@
     import { prettifyFormErrors } from '../util/form'
     import { formatRuby, isRubyString, sanitizeTranscription } from '../util/string'
     import { field } from 'svelte-forms'
-    import { generateRubyString } from '../util/kanji'
+    import { rubify } from '../util/kanji'
     import PreviewInput from './PreviewInput.svelte'
     import { onMount } from 'svelte'
 
@@ -54,6 +54,11 @@
                 'Only add Reading when the word is written in kanji')
             return
         }
+        
+        if (noteValue('useReading') && !noteValue('reading')) {
+            showErrorModal('Missing required fields', 'Use Reading checkbox is marked, but the Reading field is empty')
+            return
+        }
 
         if (noteValue('media')) {
             try {
@@ -68,13 +73,13 @@
                 return
             }
         } else {
-            if (!await showConfirmModalPromise('No media selected. Continue?'))
+            if (!noteValue('transcription')) {
+                showErrorModal('Missing important fields', 'Add either a transcription or a media file')
                 return
-        }
-
-        if (noteValue('useReading') && !noteValue('reading')) {
-            showErrorModal('Missing required fields', 'Use Reading checkbox is marked, but the Reading field is empty')
-            return
+            } else {
+                if (!await showConfirmModalPromise('No media selected. Continue?'))
+                    return
+            }
         }
 
         addNote(
@@ -116,7 +121,7 @@
         const isRuby = isRubyString(word)
         if (word && reading && !isRuby) {
             try {
-                $notePreview.value = generateRubyString(word, reading)
+                $notePreview.value = rubify(word, reading)
             } catch (err) {
                 $notePreview.value = '???'
             }

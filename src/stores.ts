@@ -124,7 +124,7 @@ function createNoteForm(): Form {
         field('useReading', false),
         field('definition', '', [required()]),
         field('media', ''),
-        field('transcription', '', [required()])
+        field('transcription', '')
     )
 }
 

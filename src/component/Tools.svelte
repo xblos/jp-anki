@@ -2,7 +2,7 @@
     import { deck, deckPath, jsonDeck, saveSettings, setSetting, settingsField } from '../stores'
     import { sanitizeTranscription } from '../util/string'
     import { showSuccessToast } from '../toasts'
-    import { showConfirmModalPromise, showErrorModal } from '../modals'
+    import { hideLoadingModal, showConfirmModalPromise, showErrorModal, showLoadingModal } from '../modals'
     import { invoke } from '@tauri-apps/api'
     import { open } from '@tauri-apps/api/dialog'
     import PreviewInput from './PreviewInput.svelte'
@@ -24,6 +24,7 @@
             return
         }
         try {
+            showLoadingModal()
             for (const note of $deck.notes) {
                 note.transcription = sanitizeTranscription(note.transcription)
             }
@@ -31,6 +32,8 @@
             showSuccessToast('Deck sanitized')
         } catch (err) {
             showErrorModal(null, err)
+        } finally {
+            hideLoadingModal()
         }
     }
 

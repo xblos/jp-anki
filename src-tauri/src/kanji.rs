@@ -47,7 +47,7 @@ pub fn generate_furigana(kanji_str: &str, kana_str: &str) -> Result<Vec<Vec<Stri
     Ok(pairs)
 }
 
-pub fn generate_ruby_string(kanji_str: &str, kana_str: &str) -> Result<String> {
+pub fn rubify(kanji_str: &str, kana_str: &str) -> Result<String> {
     let pairs = generate_furigana(kanji_str, kana_str)?;
     let mut s = String::new();
 

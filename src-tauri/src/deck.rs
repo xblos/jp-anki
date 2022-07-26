@@ -2,7 +2,7 @@ use crate::audio::AudioError;
 use crate::audio;
 use crate::ext::string::StringExt;
 use crate::file;
-use crate::furigana::generate_ruby_string;
+use crate::kanji::rubify;
 use std::path::Path;
 use std::convert::AsRef;
 use strum_macros::{AsRefStr, Display};
@@ -195,7 +195,7 @@ impl Package {
                 if note.use_reading {
                     reading.to_string()
                 } else {
-                    generate_ruby_string(&note.word, reading)
+                    rubify(&note.word, reading)
                         .with_context(|| format!("Failed to generate ruby string for {}({})", note.word, reading))?
                 }
             } else {
