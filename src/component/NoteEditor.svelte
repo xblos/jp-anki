@@ -89,6 +89,7 @@
             transcription = rubifyText(sanitizeTranscription(noteValue('transcription')))
         } catch (err) {
             showErrorModal('Error while parsing transcription', err)
+            return
         }
 
         addNote(
