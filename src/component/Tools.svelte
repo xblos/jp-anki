@@ -77,8 +77,8 @@
     <h2 class="title">Tools</h2>
     <button class="form-button" on:click={onSanitize}>Sanitize Deck</button>
     <button class="form-button" on:click={onGenerateTemplate}>Generate Template</button>
-    <h2>Debug Tools</h2>    
-    <button class="form-button" on:click={onUpgradeMediaNaming}>Upgrade Media Naming</button>
+    <!-- <h2>Debug Tools</h2>     -->
+    <!-- <button class="form-button" on:click={onUpgradeMediaNaming}>Upgrade Media Naming</button> -->
 </section>
 
 <style>

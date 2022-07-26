@@ -99,6 +99,10 @@ export function curNoteId(): number {
     return maxNoteId < 1 ? nextNoteId() : maxNoteId
 }
 
+export function resetNoteId() {
+    maxNoteId = -1
+}
+
 export function addNote(note: Note) {
     deck.update(() => {
         let value = get(deck)

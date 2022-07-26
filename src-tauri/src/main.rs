@@ -143,7 +143,7 @@ async fn move_media(dest_dir: String, src_file: String, deck_id: usize, note_id:
     let dest_path = Path::new(&dest);
 
     if dest_path.exists() {
-        catch!(fs::remove_file(dest_path).await);
+        return Err(format!("File already exists: {}", dest));
     } else {
         catch!(create_parent_dir(&dest_path).await);
     }

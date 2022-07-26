@@ -99,11 +99,15 @@
         noteForm.clear()
 
         nextNoteId()
+        $notePreview.value = null
         showSuccessToast('Note added')
     }
 
     async function onClear() {
-        showConfirmModal('Reset all fields?', () => noteForm.clear())
+        showConfirmModal('Reset all fields?', () => {
+            noteForm.clear()
+            $notePreview.value = null
+        })
     }
 
     function onWordChange() {

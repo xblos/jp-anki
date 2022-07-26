@@ -1,7 +1,16 @@
 <script lang="ts">
     import { invoke } from '@tauri-apps/api'
     import FileUploader from './FileUploader.svelte'
-    import { deck, deckPathField, deckPath, jsonDeck, deckValue, settingsValue, deckField } from '../stores'
+    import {
+        deck,
+        deckPathField,
+        deckPath,
+        jsonDeck,
+        deckValue,
+        settingsValue,
+        deckField,
+        resetNoteId
+    } from '../stores'
     import {
         hideLoadingModal,
         showConfirmModal,
@@ -35,6 +44,8 @@
                 showErrorModal(null, err)
                 deckPathField.clear()
             }
+        } finally {
+            resetNoteId()
         }
     }
 
